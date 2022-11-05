@@ -7,6 +7,7 @@ import * as Joi from 'joi'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from './users/entities/user.entity'
 import { AuthModule } from './auth/auth.module'
+import { BookmarksModule } from './bookmarks/bookmarks.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AuthModule } from './auth/auth.module'
     }),
     UsersModule,
     AuthModule,
+    BookmarksModule,
   ],
 })
 export class AppModule {}

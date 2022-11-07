@@ -14,7 +14,7 @@ export class Bookmark extends CoreEntity {
   @Field((type) => Int)
   userId: number
 
-  @Column()
-  @Field((type) => [String])
-  links: [string]
+  @Column('text', { array: true })
+  @Field((type) => [String], { nullable: true })
+  links?: string[]
 }

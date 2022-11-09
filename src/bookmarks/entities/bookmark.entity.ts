@@ -1,6 +1,7 @@
-import { Field, InputType, Int, ObjectType } from '@nestjs/graphql'
-import { Column, Entity } from 'typeorm'
-import { CoreEntity } from '../../common/core.entity'
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { CoreEntity } from '../../common/core.entity';
+import { Link } from '../../links/entities/link.entity';
 
 @InputType('BookmarkInput', { isAbstract: true })
 @ObjectType()
@@ -8,13 +9,16 @@ import { CoreEntity } from '../../common/core.entity'
 export class Bookmark extends CoreEntity {
   @Column()
   @Field((type) => String)
-  name: string
+  name: string;
 
   @Column()
   @Field((type) => Int)
-  userId: number
+  userId: number;
 
-  @Column('text', { array: true })
-  @Field((type) => [String], { nullable: true })
-  links?: string[]
+  @Field((type) => [Link], { nullable: true })
+  @OneToMany((type) => Link, (link) => link.bookmark, {
+    onDelete: 'SET NULL',
+    eager: true,
+  })
+  links?: Link[];
 }

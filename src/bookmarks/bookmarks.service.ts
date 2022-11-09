@@ -2,18 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
+  UpdateBookmarkInput,
+  UpdateBookmarkOutput,
+} from './dtos/update-bookmark.dto';
+import {
   CreateBookmarkInput,
   CreateBookmarkOutput,
 } from './dtos/create-bookmark.dto';
 import { GetBookmarkInput, GetBookmarkOutput } from './dtos/get-bookmark.dto';
 import { GetBookmarksOutput } from './dtos/get-bookmarks.dto';
 import { Bookmark } from './entities/bookmark.entity';
+import { LinksService } from '../links/links.service';
 
 @Injectable()
 export class BookmarksService {
   constructor(
     @InjectRepository(Bookmark)
     private readonly bookmarks: Repository<Bookmark>,
+
+    private readonly linksService: LinksService,
   ) {}
 
   async createBookmark(
@@ -69,6 +76,7 @@ export class BookmarksService {
           userId,
         },
       });
+
       if (!bookmark) {
         return {
           ok: false,
@@ -84,6 +92,37 @@ export class BookmarksService {
       return {
         ok: false,
         error: 'Get Bookmark Internal Error',
+      };
+    }
+  }
+
+  async updateBookmark(
+    { id, url }: UpdateBookmarkInput,
+    userId: number,
+  ): Promise<UpdateBookmarkOutput> {
+    try {
+      const bookmark = await this.bookmarks.findOne({ where: { id, userId } });
+      if (!bookmark) {
+        return {
+          ok: false,
+          error: 'Bookmark Not Found',
+        };
+      }
+      const { link } = await this.linksService.createLink({
+        url,
+        bookmarkId: bookmark.id,
+      });
+      bookmark.links = [...bookmark.links, link];
+      await this.bookmarks.save(bookmark);
+      return {
+        ok: true,
+        bookmark,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: 'Add Link Internal Error',
       };
     }
   }

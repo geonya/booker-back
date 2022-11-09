@@ -4,12 +4,17 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 import { User } from '../users/entities/user.entity';
 import { BookmarksService } from './bookmarks.service';
+
 import {
   CreateBookmarkInput,
   CreateBookmarkOutput,
 } from './dtos/create-bookmark.dto';
 import { GetBookmarkInput, GetBookmarkOutput } from './dtos/get-bookmark.dto';
 import { GetBookmarksOutput } from './dtos/get-bookmarks.dto';
+import {
+  UpdateBookmarkInput,
+  UpdateBookmarkOutput,
+} from './dtos/update-bookmark.dto';
 import { Bookmark } from './entities/bookmark.entity';
 
 @Resolver((of) => Bookmark)
@@ -38,5 +43,14 @@ export class BookmarksResolver {
     @CurrentUser() user: User,
   ): Promise<GetBookmarkOutput> {
     return this.bookmarksService.getBookmark(getBookmarkInput, user.id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation((returns) => UpdateBookmarkOutput)
+  async updateBookmark(
+    @Args('input') updateBookmarkInput: UpdateBookmarkInput,
+    @CurrentUser() user: User,
+  ): Promise<UpdateBookmarkOutput> {
+    return this.bookmarksService.updateBookmark(updateBookmarkInput, user.id);
   }
 }

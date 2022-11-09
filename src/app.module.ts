@@ -1,13 +1,13 @@
-import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo'
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
-import { GraphQLModule } from '@nestjs/graphql'
-import { UsersModule } from './users/users.module'
-import * as Joi from 'joi'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { User } from './users/entities/user.entity'
-import { AuthModule } from './auth/auth.module'
+import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { UsersModule } from './users/users.module';
+import * as Joi from 'joi';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { LinksModule } from './links/links.module';
 
 @Module({
   imports: [
@@ -41,6 +41,7 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
     UsersModule,
     AuthModule,
     BookmarksModule,
+    LinksModule,
   ],
 })
 export class AppModule {}
